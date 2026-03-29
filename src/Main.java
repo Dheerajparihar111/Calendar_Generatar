@@ -4,7 +4,10 @@ public class Main {
 
     static Scanner input = new Scanner(System.in);
 
-    static String[] events = new String[32]; // store events (1–31)
+    static String[] events = new String[32];
+
+    static int currentMonth = -1;
+    static int currentYear = -1;
 
     public static void main(String[] args) {
 
@@ -14,8 +17,9 @@ public class Main {
 
             System.out.println("\n===== CALENDAR GENERATOR =====");
             System.out.println("1 Generate Calendar");
-            System.out.println("2 Add Event");
-            System.out.println("3 Exit");
+            System.out.println("2 View Calendar");
+            System.out.println("3 Add Event");
+            System.out.println("4 Exit");
 
             choice = input.nextInt();
 
@@ -26,29 +30,49 @@ public class Main {
                     break;
 
                 case 2:
+                    viewCalendar();
+                    break;
+
+                case 3:
                     addEvent();
                     break;
             }
 
-        } while (choice != 3);
+        } while (choice != 4);
     }
 
 
     static void generateCalendar() {
 
         System.out.print("Enter month (1-12): ");
-        int month = input.nextInt();
+        currentMonth = input.nextInt();
 
         System.out.print("Enter year: ");
-        int year = input.nextInt();
+        currentYear = input.nextInt();
 
-        printCalendar(month, year);
+        printCalendar(currentMonth, currentYear);
+    }
+
+
+    static void viewCalendar() {
+
+        if (currentMonth == -1) {
+            System.out.println("No calendar generated yet");
+            return;
+        }
+
+        printCalendar(currentMonth, currentYear);
     }
 
 
     static void addEvent() {
 
-        System.out.print("Enter day (1-31): ");
+        if (currentMonth == -1) {
+            System.out.println("Generate calendar first");
+            return;
+        }
+
+        System.out.print("Enter day: ");
         int day = input.nextInt();
         input.nextLine();
 
@@ -82,7 +106,7 @@ public class Main {
         for (int d = 1; d <= days; d++) {
 
             if (events[d] != null)
-                System.out.printf("%2d* ", d);  // mark event
+                System.out.printf("%2d* ", d);
             else
                 System.out.printf("%3d ", d);
 
@@ -93,7 +117,6 @@ public class Main {
 
         System.out.println("\n");
 
-        // show event list
         for (int i = 1; i <= days; i++) {
 
             if (events[i] != null) {
@@ -105,9 +128,8 @@ public class Main {
 
     static int getDays(int month, int year) {
 
-        if (month == 2) {
+        if (month == 2)
             return isLeap(year) ? 29 : 28;
-        }
 
         if (month == 4 || month == 6 || month == 9 || month == 11)
             return 30;
