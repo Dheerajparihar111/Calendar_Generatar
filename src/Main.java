@@ -4,6 +4,8 @@ public class Main {
 
     static Scanner input = new Scanner(System.in);
 
+    static String[] events = new String[32]; // store events (1–31)
+
     public static void main(String[] args) {
 
         int choice;
@@ -12,7 +14,8 @@ public class Main {
 
             System.out.println("\n===== CALENDAR GENERATOR =====");
             System.out.println("1 Generate Calendar");
-            System.out.println("2 Exit");
+            System.out.println("2 Add Event");
+            System.out.println("3 Exit");
 
             choice = input.nextInt();
 
@@ -21,9 +24,13 @@ public class Main {
                 case 1:
                     generateCalendar();
                     break;
+
+                case 2:
+                    addEvent();
+                    break;
             }
 
-        } while (choice != 2);
+        } while (choice != 3);
     }
 
 
@@ -39,6 +46,21 @@ public class Main {
     }
 
 
+    static void addEvent() {
+
+        System.out.print("Enter day (1-31): ");
+        int day = input.nextInt();
+        input.nextLine();
+
+        System.out.print("Enter event: ");
+        String text = input.nextLine();
+
+        events[day] = text;
+
+        System.out.println("Event added");
+    }
+
+
     static void printCalendar(int month, int year) {
 
         String[] months = {
@@ -48,11 +70,9 @@ public class Main {
         };
 
         int days = getDays(month, year);
-
         int startDay = getStartDay(month, year);
 
         System.out.println("\n   " + months[month] + " " + year);
-
         System.out.println("Sun Mon Tue Wed Thu Fri Sat");
 
         for (int i = 0; i < startDay; i++) {
@@ -61,25 +81,32 @@ public class Main {
 
         for (int d = 1; d <= days; d++) {
 
-            System.out.printf("%3d ", d);
+            if (events[d] != null)
+                System.out.printf("%2d* ", d);  // mark event
+            else
+                System.out.printf("%3d ", d);
 
             if ((d + startDay) % 7 == 0) {
                 System.out.println();
             }
         }
 
-        System.out.println();
+        System.out.println("\n");
+
+        // show event list
+        for (int i = 1; i <= days; i++) {
+
+            if (events[i] != null) {
+                System.out.println(i + " : " + events[i]);
+            }
+        }
     }
 
 
     static int getDays(int month, int year) {
 
         if (month == 2) {
-
-            if (isLeap(year))
-                return 29;
-            else
-                return 28;
+            return isLeap(year) ? 29 : 28;
         }
 
         if (month == 4 || month == 6 || month == 9 || month == 11)
@@ -96,7 +123,6 @@ public class Main {
     }
 
 
-    // Zeller formula
     static int getStartDay(int m, int y) {
 
         if (m < 3) {
