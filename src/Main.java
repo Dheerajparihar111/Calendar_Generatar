@@ -20,7 +20,8 @@ public class Main {
             System.out.println("2 View Calendar");
             System.out.println("3 Add Event");
             System.out.println("4 Edit Event");
-            System.out.println("5 Exit");
+            System.out.println("5 Delete Event");
+            System.out.println("6 Exit");
 
             choice = input.nextInt();
 
@@ -30,14 +31,31 @@ public class Main {
                 case 2: viewCalendar(); break;
                 case 3: addEvent(); break;
                 case 4: editEvent(); break;
+                case 5: deleteEvent(); break;
             }
 
-        } while (choice != 5);
+        } while (choice != 6);
     }
 
 
-    static void generateCalendar() {
+    static void deleteEvent() {
 
+        System.out.print("Enter day to delete: ");
+        int day = input.nextInt();
+
+        if (events[day] == null) {
+            System.out.println("No event found");
+            return;
+        }
+
+        events[day] = null;
+
+        System.out.println("Deleted");
+    }
+
+    // 🔁 SAME CODE (Edit + Previous features)
+
+    static void generateCalendar() {
         System.out.print("Enter month: ");
         currentMonth = input.nextInt();
 
@@ -47,20 +65,15 @@ public class Main {
         printCalendar(currentMonth, currentYear);
     }
 
-
     static void viewCalendar() {
-
         if (currentMonth == -1) {
             System.out.println("Generate calendar first");
             return;
         }
-
         printCalendar(currentMonth, currentYear);
     }
 
-
     static void addEvent() {
-
         System.out.print("Enter day: ");
         int day = input.nextInt();
         input.nextLine();
@@ -71,9 +84,7 @@ public class Main {
         System.out.println("Added");
     }
 
-
     static void editEvent() {
-
         System.out.print("Enter day to edit: ");
         int day = input.nextInt();
         input.nextLine();
@@ -91,15 +102,14 @@ public class Main {
         System.out.println("Updated");
     }
 
-
-    static void printCalendar(int month, int year) {
+    static void printCalendar(int m, int y) {
 
         String[] months = {"","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 
-        int days = getDays(month, year);
-        int start = getStartDay(month, year);
+        int days = getDays(m, y);
+        int start = getStartDay(m, y);
 
-        System.out.println("\n   " + months[month] + " " + year);
+        System.out.println("\n   " + months[m] + " " + y);
         System.out.println("Sun Mon Tue Wed Thu Fri Sat");
 
         for (int i = 0; i < start; i++) System.out.print("    ");
@@ -122,7 +132,6 @@ public class Main {
         }
     }
 
-
     static int getDays(int m, int y) {
         if (m == 2) return isLeap(y) ? 29 : 28;
         if (m == 4 || m == 6 || m == 9 || m == 11) return 30;
@@ -134,7 +143,6 @@ public class Main {
     }
 
     static int getStartDay(int m, int y) {
-
         if (m < 3) { m += 12; y--; }
 
         int k = y % 100;
