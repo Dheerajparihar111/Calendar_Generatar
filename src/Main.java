@@ -4,14 +4,19 @@ public class Main {
 
     static Scanner input = new Scanner(System.in);
 
-    // multiple events per day
     static ArrayList<String>[] events = new ArrayList[32];
-
-    // holidays storage
     static HashMap<String, String> holidays = new HashMap<>();
 
     static int currentMonth = -1;
     static int currentYear = -1;
+
+    // 🎨 COLORS
+    static final String RESET = "\u001B[0m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001B[32m";
+    static final String YELLOW = "\u001B[33m";
+    static final String CYAN = "\u001B[36m";
+    static final String BLUE = "\u001B[34m";
 
     public static void main(String[] args) {
 
@@ -20,20 +25,19 @@ public class Main {
             events[i] = new ArrayList<>();
         }
 
-        // initialize holidays
         initHolidays();
 
         int choice;
 
         do {
 
-            System.out.println("\n===== CALENDAR GENERATOR =====");
-            System.out.println("1 Generate Calendar");
+            System.out.println(CYAN + "\n===== CALENDAR GENERATOR =====" + RESET);
+            System.out.println(YELLOW + "1 Generate Calendar");
             System.out.println("2 View Calendar");
             System.out.println("3 Add Event");
             System.out.println("4 Edit Event");
             System.out.println("5 Delete Event");
-            System.out.println("6 Exit");
+            System.out.println("6 Exit" + RESET);
 
             choice = input.nextInt();
 
@@ -57,15 +61,13 @@ public class Main {
         holidays.put("15-8", "Independence Day");
         holidays.put("2-10", "Gandhi Jayanti");
         holidays.put("1-5", "Maharashtra Day");
-        holidays.put("25-12", "Christmas Day");
-        // add more if needed
     }
 
-    // ================= CORE FUNCTIONS =================
+    // ================= CORE =================
 
     static void generateCalendar() {
 
-        System.out.print("Enter month: ");
+        System.out.print("Enter month (1-12): ");
         currentMonth = input.nextInt();
 
         System.out.print("Enter year: ");
@@ -77,7 +79,7 @@ public class Main {
     static void viewCalendar() {
 
         if (currentMonth == -1) {
-            System.out.println("Generate calendar first");
+            System.out.println(RED + "Generate calendar first" + RESET);
             return;
         }
 
@@ -95,7 +97,7 @@ public class Main {
 
         events[day].add(text);
 
-        System.out.println("Event added");
+        System.out.println(GREEN + "Event added" + RESET);
     }
 
     static void editEvent() {
@@ -105,7 +107,7 @@ public class Main {
         input.nextLine();
 
         if (events[day].isEmpty()) {
-            System.out.println("No events");
+            System.out.println(RED + "No events" + RESET);
             return;
         }
 
@@ -126,7 +128,7 @@ public class Main {
 
             events[day].set(index, newText);
 
-            System.out.println("Updated");
+            System.out.println(GREEN + "Updated" + RESET);
         }
     }
 
@@ -136,7 +138,7 @@ public class Main {
         int day = input.nextInt();
 
         if (events[day].isEmpty()) {
-            System.out.println("No events");
+            System.out.println(RED + "No events" + RESET);
             return;
         }
 
@@ -144,7 +146,7 @@ public class Main {
             System.out.println((i + 1) + " : " + events[day].get(i));
         }
 
-        System.out.print("Select event: ");
+        System.out.print("Select event no: ");
         int n = input.nextInt();
 
         int index = n - 1;
@@ -152,11 +154,11 @@ public class Main {
         if (index >= 0 && index < events[day].size()) {
 
             events[day].remove(index);
-            System.out.println("Deleted");
+            System.out.println(RED + "Deleted" + RESET);
         }
     }
 
-    // ================= CALENDAR PRINT =================
+    // ================= CALENDAR =================
 
     static void printCalendar(int m, int y) {
 
@@ -165,8 +167,8 @@ public class Main {
         int days = getDays(m, y);
         int start = getStartDay(m, y);
 
-        System.out.println("\n   " + months[m] + " " + y);
-        System.out.println("Sun Mon Tue Wed Thu Fri Sat");
+        System.out.println(BLUE + "\n   " + months[m] + " " + y + RESET);
+        System.out.println(CYAN + "Sun Mon Tue Wed Thu Fri Sat" + RESET);
 
         for (int i = 0; i < start; i++) System.out.print("    ");
 
@@ -174,22 +176,27 @@ public class Main {
 
             String key = d + "-" + m;
 
-            if (!events[d].isEmpty() || holidays.containsKey(key))
-                System.out.printf("%2d* ", d);
-            else
+            if (holidays.containsKey(key)) {
+                System.out.printf(RED + "%2d* " + RESET, d);
+            }
+            else if (!events[d].isEmpty()) {
+                System.out.printf(GREEN + "%2d* " + RESET, d);
+            }
+            else {
                 System.out.printf("%3d ", d);
+            }
 
             if ((d + start) % 7 == 0) System.out.println();
         }
 
         System.out.println("\n");
 
-        // show events
+        // EVENTS
         for (int i = 1; i <= days; i++) {
 
             if (!events[i].isEmpty()) {
 
-                System.out.println(i + " :");
+                System.out.println(GREEN + i + " :" + RESET);
 
                 for (String e : events[i]) {
                     System.out.println("  - " + e);
@@ -197,13 +204,13 @@ public class Main {
             }
         }
 
-        // show holidays
+        // HOLIDAYS
         for (int i = 1; i <= days; i++) {
 
             String key = i + "-" + m;
 
             if (holidays.containsKey(key)) {
-                System.out.println(i + " : " + holidays.get(key) + " (Holiday)");
+                System.out.println(RED + i + " : " + holidays.get(key) + " (Holiday)" + RESET);
             }
         }
     }
