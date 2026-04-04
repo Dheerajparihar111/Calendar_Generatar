@@ -4,12 +4,18 @@ public class Main {
 
     static Scanner input = new Scanner(System.in);
 
-    static String[] events = new String[32];
+    // array of ArrayList (multiple events per day)
+    static ArrayList<String>[] events = new ArrayList[32];
 
     static int currentMonth = -1;
     static int currentYear = -1;
 
     public static void main(String[] args) {
+
+        // initialize lists
+        for (int i = 0; i < events.length; i++) {
+            events[i] = new ArrayList<>();
+        }
 
         int choice;
 
@@ -38,25 +44,9 @@ public class Main {
     }
 
 
-    static void deleteEvent() {
-
-        System.out.print("Enter day to delete: ");
-        int day = input.nextInt();
-
-        if (events[day] == null) {
-            System.out.println("No event found");
-            return;
-        }
-
-        events[day] = null;
-
-        System.out.println("Deleted");
-    }
-
-    // 🔁 SAME CODE (Edit + Previous features)
-
     static void generateCalendar() {
-        System.out.print("Enter month: ");
+
+        System.out.print("Enter month (1-12): ");
         currentMonth = input.nextInt();
 
         System.out.print("Enter year: ");
@@ -65,42 +55,93 @@ public class Main {
         printCalendar(currentMonth, currentYear);
     }
 
+
     static void viewCalendar() {
+
         if (currentMonth == -1) {
             System.out.println("Generate calendar first");
             return;
         }
+
         printCalendar(currentMonth, currentYear);
     }
 
+
     static void addEvent() {
+
         System.out.print("Enter day: ");
         int day = input.nextInt();
         input.nextLine();
 
         System.out.print("Enter event: ");
-        events[day] = input.nextLine();
+        String text = input.nextLine();
 
-        System.out.println("Added");
+        events[day].add(text);
+
+        System.out.println("Event added");
     }
 
+
     static void editEvent() {
-        System.out.print("Enter day to edit: ");
+
+        System.out.print("Enter day: ");
         int day = input.nextInt();
         input.nextLine();
 
-        if (events[day] == null) {
-            System.out.println("No event found");
+        if (events[day].isEmpty()) {
+            System.out.println("No events");
             return;
         }
 
-        System.out.println("Old Event: " + events[day]);
+        // show events
+        for (int i = 0; i < events[day].size(); i++) {
+            System.out.println((i + 1) + " : " + events[day].get(i));
+        }
 
-        System.out.print("Enter new event: ");
-        events[day] = input.nextLine();
+        System.out.print("Select event number: ");
+        int n = input.nextInt();
+        input.nextLine();
 
-        System.out.println("Updated");
+        int index = n - 1;
+
+        if (index >= 0 && index < events[day].size()) {
+
+            System.out.print("Enter new text: ");
+            String newText = input.nextLine();
+
+            events[day].set(index, newText);
+
+            System.out.println("Updated");
+        }
     }
+
+
+    static void deleteEvent() {
+
+        System.out.print("Enter day: ");
+        int day = input.nextInt();
+
+        if (events[day].isEmpty()) {
+            System.out.println("No events");
+            return;
+        }
+
+        for (int i = 0; i < events[day].size(); i++) {
+            System.out.println((i + 1) + " : " + events[day].get(i));
+        }
+
+        System.out.print("Select event number: ");
+        int n = input.nextInt();
+
+        int index = n - 1;
+
+        if (index >= 0 && index < events[day].size()) {
+
+            events[day].remove(index);
+            System.out.println("Deleted");
+        }
+    }
+
 
     static void printCalendar(int m, int y) {
 
@@ -116,7 +157,7 @@ public class Main {
 
         for (int d = 1; d <= days; d++) {
 
-            if (events[d] != null)
+            if (!events[d].isEmpty())
                 System.out.printf("%2d* ", d);
             else
                 System.out.printf("%3d ", d);
@@ -126,11 +167,20 @@ public class Main {
 
         System.out.println("\n");
 
+        // show all events
         for (int i = 1; i <= days; i++) {
-            if (events[i] != null)
-                System.out.println(i + " : " + events[i]);
+
+            if (!events[i].isEmpty()) {
+
+                System.out.println(i + " :");
+
+                for (String e : events[i]) {
+                    System.out.println("  - " + e);
+                }
+            }
         }
     }
+
 
     static int getDays(int m, int y) {
         if (m == 2) return isLeap(y) ? 29 : 28;
@@ -143,6 +193,7 @@ public class Main {
     }
 
     static int getStartDay(int m, int y) {
+
         if (m < 3) { m += 12; y--; }
 
         int k = y % 100;
