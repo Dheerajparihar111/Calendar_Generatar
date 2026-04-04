@@ -67,7 +67,7 @@ public class Main {
 
     static void generateCalendar() {
 
-        System.out.print("Enter month (1-12): ");
+        System.out.print("Enter month(1-12): ");
         currentMonth = input.nextInt();
 
         System.out.print("Enter year: ");
@@ -146,7 +146,7 @@ public class Main {
             System.out.println((i + 1) + " : " + events[day].get(i));
         }
 
-        System.out.print("Select event no: ");
+        System.out.print("Select event: ");
         int n = input.nextInt();
 
         int index = n - 1;
@@ -168,19 +168,23 @@ public class Main {
         int start = getStartDay(m, y);
 
         System.out.println(BLUE + "\n   " + months[m] + " " + y + RESET);
-        System.out.println(CYAN + "Sun Mon Tue Wed Thu Fri Sat" + RESET);
+        System.out.println(RED + "Sun " + CYAN + "Mon Tue Wed Thu Fri Sat" + RESET);
 
         for (int i = 0; i < start; i++) System.out.print("    ");
 
         for (int d = 1; d <= days; d++) {
 
             String key = d + "-" + m;
+            boolean isSunday = ((d + start - 1) % 7 == 0);
 
             if (holidays.containsKey(key)) {
                 System.out.printf(RED + "%2d* " + RESET, d);
             }
             else if (!events[d].isEmpty()) {
                 System.out.printf(GREEN + "%2d* " + RESET, d);
+            }
+            else if (isSunday) {
+                System.out.printf(RED + "%3d " + RESET, d);
             }
             else {
                 System.out.printf("%3d ", d);
